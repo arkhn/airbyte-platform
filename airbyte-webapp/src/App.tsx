@@ -58,7 +58,7 @@ const App: React.FC = () => {
               <ServicesProvider>
                 <Suspense fallback={<LoadingPage />}>
                   <ConfigServiceProvider config={config}>
-                    <Router>
+                    <Router basename={config.baseUrl}>
                       <AnalyticsProvider>
                         <AppMonitoringServiceProvider>
                           <ApiErrorBoundary>

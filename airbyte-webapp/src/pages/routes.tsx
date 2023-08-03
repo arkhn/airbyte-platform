@@ -96,7 +96,7 @@ export const AutoSelectFirstWorkspace: React.FC = () => {
   return (
     <Navigate
       to={{
-        pathname: `/${RoutePaths.Workspaces}/${currentWorkspace.workspaceId}${location.pathname}`,
+        pathname: `${RoutePaths.Workspaces}/${currentWorkspace.workspaceId}${location.pathname}`,
         search: `?${searchParams.toString()}`,
       }}
       replace

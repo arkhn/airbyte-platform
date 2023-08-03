@@ -24,16 +24,19 @@ server {
             try_files $uri $uri/ =404;
         }
 
-        location ~ ^/(?!(assets/.*)) {
-            try_files $uri $uri/ /index.html;
+        location ~ ^$BASE_URL(.*) {
+            try_files $1 $1/ /index.html;
         }
-
+        
+        sub_filter <head>
+                '<head><base href="$BASE_URL/">';
         # (Developer Note): Please only add new properties to this, if they really need to be configurable
         #                   by a user at runtime i.e. without rebuilding the docker images. General webapp config
         #                   belongs in an environment file.
         sub_filter </head>
                 '<script data-script="config-overwrites">
                 window.TRACKING_STRATEGY = "$TRACKING_STRATEGY";
+                window.BASE_URL = "$BASE_URL";
                 </script></head>';
         sub_filter_once on;
     }
@@ -43,7 +46,7 @@ server {
         root   /usr/share/nginx/html;
     }
 
-    location /api/ {
+    location ${BASE_URL}api/ {
         fastcgi_read_timeout 1h;
         proxy_read_timeout 1h;
         client_max_body_size 200M;
@@ -53,14 +56,14 @@ server {
         proxy_set_header X-Airbyte-Auth "";
     }
 
-    location /connector-builder-api/ {
+    location ${BASE_URL}connector-builder-api/ {
         fastcgi_read_timeout 1h;
         proxy_read_timeout 1h;
         client_max_body_size 200M;
         proxy_pass http://connector-builder-server/;
     }
 
-    location /auth/ {
+    location ${BASE_URL}auth/ {
         # Block access to anything not under /auth/realms or /auth/resources
         location ~ "/auth/(?!(realms|resources).*)" {
             return 404;
