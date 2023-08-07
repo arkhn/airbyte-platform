@@ -46,7 +46,7 @@ server {
         root   /usr/share/nginx/html;
     }
 
-    location ${BASE_URL}api/ {
+    location ${BASE_URL}/api/ {
         fastcgi_read_timeout 1h;
         proxy_read_timeout 1h;
         client_max_body_size 200M;
@@ -56,14 +56,14 @@ server {
         proxy_set_header X-Airbyte-Auth "";
     }
 
-    location ${BASE_URL}connector-builder-api/ {
+    location ${BASE_URL}/connector-builder-api/ {
         fastcgi_read_timeout 1h;
         proxy_read_timeout 1h;
         client_max_body_size 200M;
         proxy_pass http://connector-builder-server/;
     }
 
-    location ${BASE_URL}auth/ {
+    location ${BASE_URL}/auth/ {
         # Block access to anything not under /auth/realms or /auth/resources
         location ~ "/auth/(?!(realms|resources).*)" {
             return 404;
