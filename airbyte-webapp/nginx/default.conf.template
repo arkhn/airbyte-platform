@@ -19,15 +19,15 @@ server {
 
     location / {
         root   /usr/share/nginx/html;
-        
+
         location ~ ^/docs/.* {
             try_files $uri $uri/ =404;
         }
 
-        location ~ ^$BASE_URL(.*) {
-            try_files $1 $1/ /index.html;
+        location ~ ^/(?!(assets/.*)) {
+            try_files $uri $uri/ /index.html;
         }
-        
+
         sub_filter <head>
                 '<head><base href="$BASE_URL/">';
         # (Developer Note): Please only add new properties to this, if they really need to be configurable
@@ -46,7 +46,7 @@ server {
         root   /usr/share/nginx/html;
     }
 
-    location ${BASE_URL}/api/ {
+    location /api/ {
         fastcgi_read_timeout 1h;
         proxy_read_timeout 1h;
         client_max_body_size 200M;
@@ -56,14 +56,14 @@ server {
         proxy_set_header X-Airbyte-Auth "";
     }
 
-    location ${BASE_URL}/connector-builder-api/ {
+    location /connector-builder-api/ {
         fastcgi_read_timeout 1h;
         proxy_read_timeout 1h;
         client_max_body_size 200M;
         proxy_pass http://connector-builder-server/;
     }
 
-    location ${BASE_URL}/auth/ {
+    location /auth/ {
         # Block access to anything not under /auth/realms or /auth/resources
         location ~ "/auth/(?!(realms|resources).*)" {
             return 404;
